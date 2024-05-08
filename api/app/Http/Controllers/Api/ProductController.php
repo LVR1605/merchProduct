@@ -55,12 +55,12 @@ class ProductController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'string',
+            'name' => 'nullable|string',
             'description' => 'nullable|string',
             'photo' => 'nullable|string',
             'type' => 'nullable|string',
             'quantity' => 'nullable|integer',
-            'price' => 'numeric',
+            'price' => 'nullable|numeric',
         ]);
 
         if ($validator->fails()) {
