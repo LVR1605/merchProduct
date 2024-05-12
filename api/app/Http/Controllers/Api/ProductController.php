@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
@@ -16,26 +15,11 @@ class ProductController extends Controller
         return response()->json(['products' => $products], 200);
     }
 
-
     public function store(ProductRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'photo' => 'nullable|string',
-            'type' => 'nullable|string',
-            'quantity' => 'nullable|integer',
-            'price' => 'required|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $product = Product::create($request->all());
+        $product = Product::create($request->validated());
         return response()->json(['product' => $product], 201);
     }
-
 
     public function show($id)
     {
@@ -46,7 +30,6 @@ class ProductController extends Controller
         return response()->json(['product' => $product], 200);
     }
 
-
     public function update(ProductRequest $request, $id)
     {
         $product = Product::find($id);
@@ -54,23 +37,9 @@ class ProductController extends Controller
             return response()->json(['error' => 'Product not found'], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string',
-            'description' => 'nullable|string',
-            'photo' => 'nullable|string',
-            'type' => 'nullable|string',
-            'quantity' => 'nullable|integer',
-            'price' => 'nullable|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
-        $product->update($request->all());
+        $product->update($request->validated());
         return response()->json(['product' => $product], 200);
     }
-
 
     public function destroy($id): JsonResponse
     {
